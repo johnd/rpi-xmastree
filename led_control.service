@@ -1,0 +1,10 @@
+[Unit]
+Description=Runs led_control script
+
+[Service]
+Type=simple
+User=pi
+ExecStart=/usr/bin/python /home/pi/led_control.py
+
+[Install]
+WantedBy=multi-user.target

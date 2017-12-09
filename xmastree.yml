@@ -1,0 +1,33 @@
+---
+- hosts: all
+  remote_user: pi
+  become: yes
+  become_method: sudo
+  become_user: root
+  tasks:
+  - name: Install GPIO bits
+    apt:
+      name: "{{item}}"
+      state: installed
+      update_cache: true
+    with_items:
+      - python-gpiozero
+      - python3-gpiozero
+  - name: Copy over code file
+    copy:
+      src: ./led_control.py
+      dest: /home/pi/led_control.py
+      owner: pi
+      mode: 0775
+  - name: Copy over systemd service
+    copy:
+      src: ./led_control.service
+      dest: /etc/systemd/system/led_control.service
+      owner: root
+      mode: 0644
+  - name: Set up systemd service
+    systemd:
+      enabled: yes
+      state: restarted
+      name: led_control
+      daemon_reload: yes
